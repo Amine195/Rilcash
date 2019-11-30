@@ -1,0 +1,121 @@
+<% layout('layout/boilerplate') -%>
+
+<div class="container mt-4">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb py-2">
+            <li class="breadcrumb-item"><a href="/sale/dashboard">Tableau de board</a></li>
+            <li class="breadcrumb-item"><a href="/sale/dashboard">Mes Annonces de vente</a></li>
+            <li class="breadcrumb-item active">Details</li>
+        </ol>
+    </nav>
+   
+    <div class="d-flex">
+        <div class="mr-auto">
+            <a class="btn waves-effect mt-0 mb-1 py-1" style="border: 1px solid #616161;" href="/sale/dashboard"><i class="fas fa-arrow-circle-left mr-2"></i> Revenir</a>
+        </div>
+        <div>
+            <a class="btn waves-effect mt-0 mb-1 py-1" style="border: 1px solid #616161;" href="/sale/edit/<%= sale._id %>?edit=true"><i class="far fa-edit mr-2"></i> Modifier</a>
+        </div>
+        <div>
+            <form action="/sale/destroy" method="POST">
+                <input type="hidden" value="<%= sale._id %>" name="saleId">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-link mt-0 mb-1 py-1" style="border: 1px solid #616161;" type="submit"><i class="far fa-trash-alt mr-2"></i> Supprimer</button>
+            </form>
+        </div>
+    </div>
+    <hr class="mt-1">                                
+
+    <!-- Container -->
+    <div class="container" style="font-size: 0.9rem;">
+        <div class="d-flex justify-content-between mb-3">
+            <span class="font-weight-bold">Status</span>
+            <% if (sale.state === 'pending') { %>
+                <span class="badge badge-warning pt-1">en attente</span>
+            <% } else if (sale.state === 'wrong') { %>
+                <span class="badge badge-danger pt-1">erroné</span>
+            <% } else { %>
+                <span class="badge badge-success pt-1">confirmé</span>
+            <% } %>
+        </div>
+
+        <h5 class="mb-3">Information sur le bien</h5>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Type de bien</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.typeOfProperty %></p>
+        </div>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Transaction</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.transaction %></p>
+        </div>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Adresse</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.address %></p>
+        </div>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Ville</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.city %></p>
+        </div>
+        <% if (sale.moreInformation != '') { %>
+            <p class="mb-3 ml-4"><span class="font-weight-bold">Autre : </span> <%= sale.moreInformation %></p>
+        <% } else { %>
+            <div class="mb-3">
+
+            </div>
+        <% } %>
+
+        <h5 class="mb-3">Information sur le propriétaire</h5>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Nom complet</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.ownerFullName %></p>
+        </div>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Numéro de téléphone</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.ownerPhone %></p>
+        </div>
+        <div class="d-flex justify-content-between mb-3 ml-4">
+            <span class="font-weight-bold">Relation avec propriétaire ?</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= sale.relationshipWithOwner %></p>
+        </div>
+
+        <h5 class="mb-3">Autre information</h5>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Es votre propriété ?</span>
+            <% if (sale.isOwner) { %>
+                <i class="fas green-text fa-check-circle pt-1"></i>
+            <% } else { %>
+                <i class="fas red-text fa-times-circle pt-1"></i>
+            <% } %>
+        </div>
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Accord du propriétaire ?</span>
+            <% if (sale.ownersAgreement) { %>
+                <i class="fas green-text fa-check-circle pt-1"></i>
+            <% } else { %>
+                <i class="fas red-text fa-times-circle pt-1"></i>
+            <% } %>
+        </div>
+
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Vous avez acceptez les condition d'utilisation ?</span>
+            <% if (sale.isAgree) { %>
+                <i class="fas green-text fa-check-circle pt-1"></i>
+            <% } else { %>
+                <i class="fas red-text fa-times-circle pt-1"></i>
+            <% } %>
+        </div>
+
+        <div class="d-flex justify-content-between mb-1 ml-4">
+            <span class="font-weight-bold">Date de mise en ligne</span>
+            <p class="mb-0" style="text-transform: uppercase;"><%= moment(sale.created).format('LLL')%></p>
+        </div>
+
+    </div>
+    <hr>
+
+    <div class="py-5" style="background-color: rgba(62, 69, 81, 0.1);">
+    
+    </div>
+
+</div>

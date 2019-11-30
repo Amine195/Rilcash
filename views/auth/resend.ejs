@@ -1,0 +1,48 @@
+<% layout('layout/boilerplateAuth') -%>
+
+<article class="text-center">
+    <h3 class="text-black-50 font-weight-bold mr-2">AGENCE</h3>
+    <h3 class="text-black-50 font-weight-bold">IMMOBILIERE</h3>
+    <p class="text-muted mt-3 mb-0" style="font-size: 15px;">Veuillez écrire votre email ci-bas.</p>
+    <p class="text-muted" style="font-size: 14px;">Le code d'activation vous sera Renvoyer.</p>
+    <i class="far fa-paper-plane text-muted fa-2x"></i>
+</article>
+
+<article class="container mt-3">
+    <div class="row d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-10">
+
+            <%- include('../include/flashMessage.ejs') %>
+
+            <form class="needs-validation" action="/resend" method="POST" novalidate>
+                <!-- Email -->
+                <div class="form-group mb-4">
+                    <% if (validationErrors.find(e => e.param === 'email')) { %>
+                        <small id="email" class="form-text text-muted red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.email.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'email') ? 'invalid': '' %> mb-0"
+                        type="text"
+                        name="email"
+                        id="email"
+                        pattern="^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$"
+                        value="<%= email %>"
+                        placeholder="E-mail"
+                        required
+                    >
+                    <div class="invalid-feedback form-text text-red animated fadeInDown mt-0 ml-1" id="email">
+                        <i class="fas fa-times-circle red-text mr-1"></i> Email obligatoire !
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-block waves-effect py-2 mb-2" style="border: 1px solid #616161;" type="submit"><i class="far fa-check-circle mr-1"></i> Renvoyer</button>
+            </form>
+
+        </div>
+    </div>
+</article>
+
+<% block('footer').append('<script src="/js/formValidation/mdbValidation.js"></script>') %>

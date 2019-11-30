@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title><%= pageTitle %></title>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        <!-- Google Font Logo -->
+        <link href="https://fonts.googleapis.com/css?family=Rock+Salt&display=swap" rel="stylesheet">
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <!-- Material Design Bootstrap -->
+        <link rel="stylesheet" href="/css/mdb.min.css">
+        <!-- Your global custom styles -->
+        <link rel="stylesheet" href="/css/app.css">
+        <!-- Your specific custom styles -->
+        <%- block('head').toString() %>
+    </head>
+    <body style="font-family: 'Oswald', sans-serif;">
+
+        <header>
+            <%- include('../include/headerAuth.ejs') %>
+        </header>
+
+        <main>
+            <%-body -%>
+        </main>
+
+        <footer>
+            <%- include('../include/footer.ejs') %>
+        </footer>
+
+        <!-- JQuery -->
+        <script type="text/javascript" src="/js/jquery.min.js"></script>
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="/js/popper.min.js"></script>
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="/js/mdb.min.js"></script>
+        <!-- Your global script -->
+        <script type="text/javascript" src="/js/app.js"></script>
+        <!-- Your custom script (optional) -->
+        <%- block('footer').toString() %>
+    </body>
+</html>

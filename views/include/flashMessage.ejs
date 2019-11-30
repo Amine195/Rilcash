@@ -1,0 +1,11 @@
+<% if (errorFM && errorFM !="") { %>
+    <div class="text-center alert py-1" style="background-color:#ffebee; border-color:#f44336" role="alert">
+        <i class="fas fa-times-circle red-text mr-2"></i> <span style="font-size: 14px;"><%= errorFM %></span>
+    </div>
+<% } %>
+
+<% if (successFM && successFM !="") { %>
+    <div class="text-center alert py-1" style="background-color:#e8f5e9; border-color:#4caf50">
+        <i class="far fa-check-circle green-text mr-3"></i> <span style="font-size: 14px;"><%= successFM %></span>
+    </div>
+<% } %>

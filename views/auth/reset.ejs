@@ -1,0 +1,66 @@
+<% layout('layout/boilerplateAuth') -%>
+
+<!-- Description -->
+<article class="text-center">
+    <h3 class="text-black-50 font-weight-bold mr-2">AGENCE</h3>
+    <h3 class="text-black-50 font-weight-bold">IMMOBILIERE</h3>
+    <p class="text-muted font-weight-bold mt-3 mb-0" style="font-size: 15px;">Nouveau mot de passe.</p>
+    <p class="text-muted" style="font-size: 14px;">Rénitialisation Votre mot de passe.</p>
+    <i class="fas fa-unlock-alt text-muted fa-2x"></i>
+</article>
+
+<!-- Main -->
+<article class="container mt-3">
+    <div class="row d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8 col-10">
+
+            <!-- Formulaire -->
+            <form class="needs-validation" action="/reset" method="POST" novalidate>
+
+                <!-- Password -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'password')) { %>
+                        <small id="password" class="form-text text-muted red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.password.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'password') ? 'invalid': '' %> mb-0"
+                        type="password"
+                        name="password"
+                        id="password"
+                        pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                        placeholder="Mot de passe"
+                        required
+                    >
+                    <div class="invalid-feedback form-text text-red animated fadeInDown mt-0 ml-1" id="password">
+                        <i class="fas fa-times-circle red-text mr-1"></i> Alphanumérique, au moins 8 caractères
+                    </div>
+                </div>
+
+                <!-- Confirmation password -->
+                <div class="form-group" style="margin-bottom: 36px;">
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'confirmPassword') ? 'invalid': '' %> mb-1"
+                        type="password"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                        placeholder="Confirmation Mot de passe"
+                        required
+                    >
+                </div>
+
+                <!-- Sign up button -->
+                <input type="hidden" name="userId" value="<%= userId %>">
+                <input type="hidden" name="passwordToken" value="<%= passwordToken %>">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-block waves-effect py-2 mb-2" style="border: 1px solid #616161;" type="submit"><i class="far fa-check-circle mr-1"></i> Rénitialisation</button>
+
+            </form>
+
+        </div>
+    </div>
+</article>
+
+<% block('footer').append('<script src="/js/formValidation/mdbValidation.js"></script>') %>

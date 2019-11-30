@@ -1,0 +1,80 @@
+<% layout('layout/boilerplateAuth') -%>
+
+<article class="text-center">
+    <h3 class="text-black-50 font-weight-bold mr-2">AGENCE</h3>
+    <h3 class="text-black-50 font-weight-bold">IMMOBILIERE</h3>
+    <p class="text-muted font-weight-bold mt-3 mb-0" style="font-size: 15px;">Connectez-vous à votre Compte.</p>
+    <p class="text-muted" style="font-size: 14px;">Consulter votre Tableau de board</p>
+    <i class="fas fa-fingerprint text-muted fa-2x"></i>
+</article>
+
+<article class="container mt-3">
+    <div class="row d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8 col-10">
+
+            <%- include('../include/flashMessage.ejs') %>
+
+            <form class="needs-validation" action="/login" method="POST" novalidate>
+
+                <!-- Email -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'email')) { %>
+                        <small id="email" class="form-text text-muted red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.email.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'email') ? 'invalid': '' %> mb-0"
+                        type="text"
+                        name="email"
+                        id="email"
+                        pattern="^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$"
+                        value="<%= oldInput.email %>"
+                        placeholder="E-mail"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="form-group" style="margin-bottom: 36px;">
+                    <% if (validationErrors.find(e => e.param === 'password')) { %>
+                        <small id="password" class="form-text text-muted red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.password.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'password') ? 'invalid': '' %> mb-1"
+                        type="password"
+                        name="password"
+                        id="password"
+                        pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                        value="<%= oldInput.password %>"
+                        placeholder="Mot de passe"
+                        required
+                    >
+                    <div class="invalid-feedback form-text text-red animated fadeInDown mt-0 ml-1" id="password">
+                        <i class="fas fa-times-circle red-text mr-1"></i> Alphanumérique, au moins 8 caractères
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-block waves-effect py-2 mb-2" style="border: 1px solid #616161;" type="submit"><i class="far fa-check-circle mr-1"></i> Se Connecter</button>
+            </form>
+            
+            <div class="text-center">
+                <a href="/forgot" style="font-size:14px;"> Mot de passe oublié ?</a>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted mb-1" style="font-size: 14px;">Vous n'avez pas de compte ?</p>
+                <a href="/register" class="btn btn-block waves-effect text-muted py-2 pl-4 mt-0 mb-2"
+                    style="border: 1px solid rgba(73, 80, 87, 0.5);">
+                    <i class="fas fa-user-plus mr-1"></i> Créer un nouveau compte
+                </a>
+            </div>
+
+        </div>
+    </div>
+</article>
+
+<% block('footer').append('<script src="/js/formValidation/mdbValidation.js"></script>') %>

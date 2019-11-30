@@ -1,0 +1,48 @@
+<% layout('layout/boilerplateAuth') -%>
+
+<article class="text-center">
+    <h3 class="text-black-50 font-weight-bold mr-2">AGENCE</h3>
+    <h3 class="text-black-50 font-weight-bold">IMMOBILIERE</h3>
+    <p class="text-muted font-weight-bold mt-3 mb-0" style="font-size: 15px;">Veuillez insérer votre code d'activation ci-bas.</p>
+    <a href="/resend" style="font-size:14px;"> Renvoyer le code d'activation</a>
+    <br>
+    <i class="fas fa-code text-muted fa-2x mt-3"></i>
+</article>
+
+<article class="container mt-3">
+    <div class="row d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-10">
+
+            <%- include('../include/flashMessage.ejs') %>
+
+            <form class="needs-validation" action="/active" method="POST" novalidate>
+                <!-- Active Token -->
+                <div class="form-group mb-4">
+                    <% if (validationErrors.find(e => e.param === 'activeToken')) { %>
+                        <small id="email" class="form-text text-muted red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.activeToken.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'activeToken') ? 'invalid': '' %> mb-1"
+                        type="text"
+                        name="activeToken"
+                        id="activeToken"
+                        pattern=".{6}"
+                        placeholder="Activation code"
+                        required
+                    >
+                    <div class="invalid-feedback form-text text-red animated fadeInDown mt-0 ml-1" id="password">
+                        <i class="fas fa-times-circle red-text mr-1"></i> Alphanumérique, 6 caractères
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn btn-block waves-effect py-2 mb-2" style="border: 1px solid #616161;" type="submit"><i class="far fa-check-circle mr-1"></i> Activer</button>
+            </form>
+
+        </div>
+    </div>
+</article>
+
+<% block('footer').append('<script src="/js/formValidation/mdbValidation.js"></script>') %>

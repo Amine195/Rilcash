@@ -1,0 +1,27 @@
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center mr-3">
+        <% if(currentPage !== 1 && previousPage !== 1) { %>
+            <li class="page-item">
+                <a class="page-link px-2 py-1" href="?page=1">1</a>
+            </li>
+        <% } %>
+        <% if(hasPreviousPage) { %>
+            <li class="page-item">
+                <a class="page-link px-2 py-1" href="?page=<%= previousPage %>"><%= previousPage %></a>
+            </li>
+        <% } %>
+        <li class="page-item active">
+            <a class="page-link px-2 py-1" href="?page=<%= currentPage %>"><%= currentPage %></a>
+        </li>
+        <% if(hasNextPage) { %>
+            <li class="page-item">
+                <a class="page-link px-2 py-1" href="?page=<%= nextPage %>"><%= nextPage %></a>
+            </li>
+        <% } %>
+        <% if(lastPage !== currentPage && nextPage !== lastPage) { %>
+            <li class="page-item">
+                <a class="page-link px-2 py-1" href="?page=<%= lastPage %>"><%= lastPage %></a>
+            </li>
+        <% } %>
+    </ul>
+</nav>

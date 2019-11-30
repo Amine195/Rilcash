@@ -1,0 +1,127 @@
+<% layout('layout/boilerplate') -%>
+<% block('head').append(`
+    <style>
+        .form-group input.invalid {
+            border-color: red;
+        }
+        td {
+            padding-top: 0xp;
+        }
+    </style>
+`) %>
+
+<section class="container mt-4">
+
+    <!-- Parrain -->
+    <article>
+        <h6 class="mb-1 ml-1 text-muted"><i class="fas fa-code-branch mr-1"></i> VOTRE PARRAIN</h6>
+        <hr class="mt-0 mb-1">
+        
+        <div class="mb-4 py-1" style="background-color: rgba(62, 69, 81, 0.1);">
+            <% if (!user.godFather) { %>
+            <form class="ml-2" action="/sponsorship" method="POST">
+                <div class="form-row align-items-center">
+
+                    <div class="col-auto pr-0">
+                        <label class="sr-only" for="inlineFormInput">Name</label>
+                        <input type="text" class="form-control" name="email" placeholder="Email" style="height: 32px; margin-bottom: 1px;">
+                    </div>
+
+                    <div class="col-auto pl-0">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn waves-effect my-1" id="btn-preload" style="border: 1px solid #616161; padding-top: 5px; padding-bottom: 5px;"><i class="far fa-check-circle mr-1"></i> parrainez</button>
+                    </div>
+
+                </div>
+            </form>
+            <% } else { %>
+                <div class="ml-3 py-1" style="font-size: 0.9rem;">
+                    <p class="my-0"><span class="font-weight-bold mr-2">Email:</span> <%= user.godFather.email %></p>
+                    <p class="my-0"><span class="font-weight-bold mr-2">Nom:</span> <%= user.godFather.familyName %></p>
+                    <p class="my-0"><span class="font-weight-bold mr-2">Prénom:</span> <%= user.godFather.firstName %></p>
+                    <p class="mb-0"><span class="font-weight-bold mr-2">Numéro de Télepone:</span> <%= user.godFather.phone %></p>
+                </div>
+            <% } %>
+        </div>
+    </article>
+
+    <%- include('../include/flashMessage.ejs') %>
+
+    <!-- Table -->
+    <article>
+        <p class="mb-0 ml-1 text-muted">Tous les annonces de vente assignés à ce compte <span class="badge badge-primary ml-1"><%= totalSales %></span></p>
+        <% if (totalSales >= 3 && !user.isProfessional ) { %>
+            <a href="#" class="btn waves-effect float-right py-1 mb-1" style="border: 1px solid #616161;" onclick="toastr.error('IMPOSSIBLE: maximum atteint');"><i class="fas fa-plus-circle mr-1"></i> soumettre une annonce</a>
+        <% } else { %>
+            <a href="/sale/new" class="btn waves-effect float-right py-1 mb-1" style="border: 1px solid #616161;"><i class="fas fa-plus-circle mr-1"></i> soumettre une annonce</a>
+        <% } %>
+        <hr class="mt-0">
+
+        <% if (totalSales > 0) { %>
+
+            <div class="table-responsive">
+                <% if (totalSales >= 3 && !user.isProfessional ) { %>
+                    <p class="note note-danger mb-0 mt-2" style="font-size: 14px;">
+                        <strong>Avertissement :</strong>
+                        Vous avez atteint votre maximum d'annonce déposer, Si vous voulez ajouter plus de 3 Annonces et gagner encore plus d'argent passez à la version PRO.
+                    </p>
+                <% } %>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Type de bien</th>
+                            <th scope="col">Transaction</th>
+                            <th scope="col">Ville</th>
+                            <th scope="col">Date de création</th>
+                            <th scope="col">Etat</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let sale of sales) { %>
+                            <tr>
+                                <th scope="row"><%= sale._id %></th>
+                                <td><%= sale.typeOfProperty %></td>
+                                <td><%= sale.transaction %></td>
+                                <td><%= sale.city %></td>
+                                <td><%= moment(sale.created).format('DD-MM-YYYY') %></td>
+                                <td>
+                                    <% if (sale.state === 'pending') { %>
+                                        <span class="badge badge-warning">en attente</span>
+                                    <% } else if (sale.state === 'wrong') { %>
+                                        <span class="badge badge-danger">erroné</span>
+                                    <% } else { %>
+                                        <span class="badge badge-success">confirmé</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <a class="blue-text mr-2" href="/sale/show/<%= sale._id %>">Consulter</a>
+                                    <a class="blue-text" href="/sale/edit/<%= sale._id %>?edit=true">Modifier</a>
+                                </td>
+                                <td>
+                                    <form action="/sale/destroy" method="POST">
+                                        <input type="hidden" value="<%= sale._id %>" name="saleId">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <button class="btn btn-link red-text mt-0 mb-1 py-0" type="submit">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <% if (totalSales > ITEMS_PER_PAGE) { %>
+                <%- include('../include/pagination.ejs') %>
+            <% } %>
+
+        <% } else { %>
+
+            <p class="ml-1">Vous n'avez pas encore postez d'annonce.</p>
+            
+        <% } %>
+    </article>
+
+</section>

@@ -1,0 +1,364 @@
+<% layout('layout/boilerplate') -%>
+<% if (!editing) { %>
+    <% block('head').append(`
+        <style>
+            .form-group ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                color: #495057;
+            }
+            .form-group ::-moz-placeholder { /* Firefox 19+ */
+                color: #495057;
+            }
+            .form-group :-ms-input-placeholder { /* IE 10+ */
+                color: #495057;
+            }
+            .form-group :-moz-placeholder { /* Firefox 18- */
+                color: #495057;
+            }
+        </style>
+    `) %>
+<% } else { %>
+    <% block('head').append(`
+        <style>
+            .custom-select,
+            .form-control {
+                color: #f44336;
+            }
+        </style>
+    `) %>
+<% } %>
+
+<section class="container mt-3">
+
+    <!-- Header page -->
+    <article class="text-center">
+        <p class="text-muted mb-0" style="font-size: 15px;"><% if (editing) { %>Modifier votre<% } else { %>Déposez une<% } %> information de Vente immobilière</p>
+        <p class="text-muted" style="font-size: 14px;">et gagner de l'argent facilement</p>
+        <i class="far fa-arrow-alt-circle-down text-muted fa-lg animated bounce"></i>
+    </article>
+
+    <!-- form -->
+    <article class="row d-flex justify-content-center mt-3">
+        <div class="col-xl-6 col-lg-6 col-md-8 col-sm-10 col-10">
+
+            <%- include('../include/flashMessage.ejs') %>
+
+            <% if (!editing) { %>
+                <% if (saleLength >= 3 && !user.isProfessional ) { %>
+                    <p class="note note-danger animated shake" style="font-size: 14px;">
+                        <strong>Avertissement :</strong>
+                        Vous avez atteint votre maximum d'annonce déposer, Si vous voulez ajouter plus de 3 Annonces et gagner encore plus d'argent passez à la version PRO.
+                    </p>
+                <% } %>
+            <% } %>
+
+            <form class="needs-validation" action="/sale/<% if (editing) { %>update<% } else { %>create<% } %>" method="POST" novalidate>
+
+                <!-- Type Of Property -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'typeOfProperty')) { %>
+                        <small id="typeOfProperty" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.typeOfProperty.msg %>
+                        </small>
+                    <% } %>
+                    <select 
+                        class="custom-select <%= validationErrors.find(e => e.param === 'typeOfProperty') ? 'invalid': '' %>"
+                        type="text"
+                        name="typeOfProperty"
+                        id="typeOfProperty"
+                        style="font-family: 'Oswald', sans-serif;"
+                        required
+                    >
+                        <% if (editing || hasError) { %>
+                            <option value="" disabled>Type de Bien</option>
+                            <% for (let typeOfPropertySelect of typeOfPropertySelects) { %>
+                                <option value="<%= typeOfPropertySelect.value %>" <%= typeOfPropertySelect.value === sale.typeOfProperty ? 'selected' : '' %>><%= typeOfPropertySelect.name %></option>
+                            <% } %>
+                        <% } else { %>
+                            <option value="" disabled selected>Type de Bien</option>
+                            <% for (let typeOfPropertySelect of typeOfPropertySelects) { %>
+                                <option value="<%= typeOfPropertySelect.value %>"><%= typeOfPropertySelect.name %></option>
+                            <% } %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <!-- Transaction -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'transaction')) { %>
+                        <small id="transaction" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.transaction.msg %>
+                        </small>
+                    <% } %>
+                    <select 
+                        class="custom-select <%= validationErrors.find(e => e.param === 'transaction') ? 'invalid': '' %>"
+                        type="text"
+                        name="transaction"
+                        id="transaction"
+                        style="font-family: 'Oswald', sans-serif;"
+                        value="<% if (editing || hasError) { %><%= sale.transaction %><% } %>"
+                        required
+                    >
+                        <% if (editing || hasError) { %>
+                            <% if ( sale.transaction === "Vente" ) { %>
+                                <option value="" disabled>Transaction</option>
+                                <option value="Vente" selected>Vente</option>
+                                <option value="Location">Location</option>
+                            <% } else { %>
+                                <option value="" disabled>Transaction</option>
+                                <option value="Vente">Vente</option>
+                                <option value="Location" selected>Location</option>
+                            <% } %>
+                        <% } else { %>
+                            <option value="" disabled selected>Transaction</option>
+                            <option value="Vente">Vente</option>
+                            <option value="Location">Location</option>
+                        <% } %>
+                    </select>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'address')) { %>
+                        <small id="address" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.address.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'address') ? 'invalid': '' %>"
+                        type="text"
+                        name="address"
+                        id="address"
+                        minlength="8"
+                        value="<% if (editing || hasError) { %><%= sale.address %><% } %>"
+                        placeholder="Address"
+                        required
+                    >
+                </div>
+
+                <!-- City -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'city')) { %>
+                        <small id="city" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.city.msg %>
+                        </small>
+                    <% } %>
+                    <select 
+                        class="custom-select <%= validationErrors.find(e => e.param === 'city') ? 'invalid': '' %>"
+                        type="text"
+                        name="city"
+                        id="city"
+                        style="font-family: 'Oswald', sans-serif;"
+                        value="<% if (editing || hasError) { %><%= sale.city %><% } %>"
+                        required
+                    >
+                        <% if (editing || hasError) { %>
+                            <option value="" disabled>Ville</option>
+                            <% for (let citySelect of citySelects) { %>
+                                <option value="<%= citySelect.value %>" <%= citySelect.value === sale.city ? 'selected' : '' %>><%= citySelect.name %></option>
+                            <% } %>
+                        <% } else { %>
+                            <option value="" disabled selected>Ville</option>
+                            <% for (let citySelect of citySelects) { %>
+                                <option value="<%= citySelect.value %>"><%= citySelect.name %></option>
+                            <% } %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <!-- is Owner -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'isOwner')) { %>
+                        <small id="isOwner" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.isOwner.msg %>
+                        </small>
+                    <% } %>
+                    <select 
+                        class="custom-select <%= validationErrors.find(e => e.param === 'isOwner') ? 'invalid': '' %>"
+                        type="text"
+                        name="isOwner"
+                        id="isOwner"
+                        style="font-family: 'Oswald', sans-serif;"
+                        value="<% if (editing || hasError) { %><%= sale.isOwner %><% } %>"
+                        required
+                    >
+                        <% if (editing || hasError) { %>
+                            <% if ( sale.isOwner === "true" ) { %>
+                                <option value="" disabled>Es votre propriété ?</option>
+                                <option value="true" selected>Oui</option>
+                                <option value="false">Non</option>
+                            <% } else { %>
+                                <option value="" disabled>Es votre propriété ?</option>
+                                <option value="true">Oui</option>
+                                <option value="false" selected>Non</option>
+                            <% } %>
+                        <% } else { %>
+                            <option value="" disabled selected>Es votre propriété ?</option>
+                            <option value="true">Oui</option>
+                            <option value="false">Non</option>
+                        <% } %>
+                    </select>
+                </div>
+
+                <!-- relationship With Owner -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'relationshipWithOwner')) { %>
+                        <small id="relationshipWithOwner" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.relationshipWithOwner.msg %>
+                        </small>
+                    <% } %>
+                    <select 
+                        class="custom-select <%= validationErrors.find(e => e.param === 'relationshipWithOwner') ? 'invalid': '' %>"
+                        type="text"
+                        name="relationshipWithOwner"
+                        id="relationshipWithOwner"
+                        style="font-family: 'Oswald', sans-serif;"
+                        value="<% if (editing || hasError) { %><%= sale.relationshipWithOwner %><% } %>"
+                        required
+                    >
+                        <% if (editing || hasError) { %>
+                            <option value="" disabled>Relation avec le propriétaire</option>
+                            <% for (let relationshipWithOwnerSelect of relationshipWithOwnerSelects) { %>
+                                <option value="<%= relationshipWithOwnerSelect.value %>" <%= relationshipWithOwnerSelect.value === sale.relationshipWithOwner ? 'selected' : '' %>><%= relationshipWithOwnerSelect.name %></option>
+                            <% } %>
+                        <% } else { %>
+                            <option value="" disabled selected>Relation avec le propriétaire</option>
+                            <% for (let relationshipWithOwnerSelect of relationshipWithOwnerSelects) { %>
+                                <option value="<%= relationshipWithOwnerSelect.value %>"><%= relationshipWithOwnerSelect.name %></option>
+                            <% } %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <!-- Owner FullName -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'ownerFullName')) { %>
+                        <small id="ownerFullName" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.ownerFullName.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'ownerFullName') ? 'invalid': '' %>"
+                        type="text"
+                        name="ownerFullName"
+                        id="ownerFullName"
+                        minlength="8"
+                        value="<% if (editing || hasError) { %><%= sale.ownerFullName %><% } %>"
+                        placeholder="Nom complet du propriétaire"
+                        required
+                    >
+                </div>
+
+                <!-- Owner Phone -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'ownerFullName')) { %>
+                        <small id="ownerFullName" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.ownerFullName.msg %>
+                        </small>
+                    <% } %>
+                    <input
+                        class="form-control <%= validationErrors.find(e => e.param === 'ownerPhone') ? 'invalid': '' %>"
+                        type="text"
+                        name="ownerPhone"
+                        id="ownerPhone"
+                        pattern="^[0-9]{12}$"
+                        value="<% if (editing || hasError) { %><%= sale.ownerPhone %><% } %>"
+                        placeholder="Numéro du propriétaire"
+                        required
+                    >
+                </div>
+
+                <!-- Owner Agreement -->
+                <div class="form-group mb-2">
+                    <% if (validationErrors.find(e => e.param === 'ownersAgreement')) { %>
+                        <small id="ownersAgreement" class="form-text red-text float-right animated shake mt-0">
+                            <i class="fas fa-times-circle red-text mr-1"></i> <%= errorVM.ownersAgreement.msg %>
+                        </small>
+                    <% } %>
+                    <select 
+                        class="custom-select <%= validationErrors.find(e => e.param === 'ownersAgreement') ? 'invalid': '' %>"
+                        type="text"
+                        name="ownersAgreement"
+                        id="ownersAgreement"
+                        style="font-family: 'Oswald', sans-serif;"
+                        value="<% if (editing || hasError) { %><%= sale.ownersAgreement %><% } %>"
+                        required
+                    >
+                        <% if (editing || hasError) { %>
+                            <option value="" disabled>Accord du propriétaire ?</option>
+                            <option value="true" selected>Oui</option>
+                        <% } else { %>
+                            <option value="" disabled selected>Accord du propriétaire ?</option>
+                            <option value="true">Oui</option>
+                        <% } %>
+                    </select>
+                    <small id="ownersAgreementHelpBlock" class="form-text text-muted ml-1 mt-0">
+                        Vous devriez avoir l'accord du propriétaire quand vous posez votre annonce.
+                    </small>
+                </div>
+
+                <!-- More Information -->
+                <div class="form-group mb-2">
+                    <textarea
+                        class="form-control"
+                        type="text"
+                        name="moreInformation"
+                        id="moreInformation"
+                        placeholder="Plus d'information"
+                        rows="3"><% if (editing || hasError) { %><%= sale.moreInformation %><% } %></textarea>
+                </div>
+
+                <div class="form-group mb-1">
+                    <div class="custom-control custom-checkbox">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            name="agreeTermsCondition"
+                            id="agreeTermsCondition"
+                            <% if (editing || hasError) { %>
+                                <% if (sale.isAgree) { %>
+                                    checked
+                                <% } %>
+                            <% } %>
+                            required
+                        >
+                        <label
+                            class="custom-control-label"
+                            for="agreeTermsCondition"
+                            >
+                                En cliquant sur le bouton vous acceptez nos conditions d'utilisation.
+                        </label>
+                        <div class="invalid-feedback form-text text-red animated fadeInDown mt-0 ml-1" id="ownersAgreement" style="font-size: 13px;">
+                            <i class="fas fa-times-circle red-text mr-1"></i> Vous devez accepter avant de soumettre.
+                        </div>
+                    </div>
+                </div>
+
+                <% if (editing) { %>
+                    <input type="hidden" value="<%= sale._id %>" name="saleId">
+                <% } %>
+                
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button
+                    class="btn btn-block waves-effect py-2 mb-2"
+                    style="border: 1px solid #616161;"
+                    type="submit"
+                    <% if (!editing) { %>
+                        <% if (saleLength >= 3 && !user.isProfessional ) { %>
+                            disabled
+                        <% } %>
+                    <% } %>
+                >
+                    <i class="far fa-check-circle mr-1"></i> <% if (editing) { %>Mètre a jour<% } else { %>Ajouter<% } %>
+                </button>
+            </form> 
+
+            <div class="text-center">
+                <a href="/sale/dashboard" style="font-size:14px;"><i class="fas fa-arrow-circle-left mr-2"></i> Annuler et revenir en arriere</a>
+            </div> 
+
+        </div>
+    </article>
+
+</section>
+
+<% block('footer').append('<script src="/js/formValidation/mdbValidation.js"></script>') %>

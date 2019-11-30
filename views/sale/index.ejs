@@ -1,0 +1,75 @@
+<% layout('layout/boilerplate') -%>
+
+<section class="container">
+
+    <article class="mt-4">
+        <h3>Bienvenue chez <span>Courtier-dz</span></h3>
+        <p class="mb-0">
+            S'il vous plaît faites défiler cette liste et choisissez les annonces qui vous intéressent.<br> les utilisateurs qui en choisissent plus ont tendance à voir un contenu plus intéressant.
+        </p>
+        <hr class="mt-0">
+    </article>
+
+    <%- include('../include/flashMessage.ejs') %>
+
+    <% if (sales.length > 0) { %>
+
+        <article class="row mb-3">
+            <% for (let sale of sales) { %>
+                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                    <div class="card border-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header" style="text-transform: uppercase; background-color: white; color: #3EBBC4; font-size: 13px;">
+                            <strong class="mr-2"><%= sale.typeOfProperty %></strong><span class="badge badge-info"><%= sale.transaction %></span>
+                        </div>
+                        <div class="card-body text-dark py-3" style="background-color: rgba(62, 69, 81, 0.05);">
+                            <% if (sale.state === 'pending') { %>
+                                <span class="badge badge-warning float-right pt-1">en attente</span>
+                            <% } else if (sale.state === 'wrong') { %>
+                                <span class="badge badge-danger float-right pt-1">erroné</span>
+                            <% } else { %>
+                                <span class="badge badge-success float-right pt-1">confirmé</span>
+                            <% } %>
+                            <h6 class="card-title mb-0"><%= sale.city %></h6>
+                            <p class="card-text my-1"><%= moment(sale.created).format('LLL') %></p>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn mt-2 mb-0 ml-0 py-1 px-3" data-toggle="modal" data-target="#sideModalTR" style="border: 1px solid #3EBBC4; color: #3EBBC4;">
+                                Detail
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </article>
+
+        <% if (totalSales > ITEMS_PER_PAGE) { %>
+            <%- include('../include/pagination.ejs') %>
+        <% } %>
+
+    <% } else { %>
+        <p>Aucune annonce dans la base de donnée.</p>
+    <% } %>
+</section>
+
+<!-- Side Modal Top Right -->
+<div class="modal fade right" id="sideModalTR" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-side modal-top-right" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header py-2">
+                <h5 class="modal-title w-100" id="myModalLabel">Plus d'information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body pt-2 pb-0">
+                <p>
+                    Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
+                    Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500,
+                    quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte.
+                </p>
+            </div>
+        
+        </div>
+    </div>
+</div>
