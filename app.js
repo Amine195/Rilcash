@@ -18,6 +18,8 @@ const User = require('./models/user');
 
 // Initialize Express App
 const app = express();
+const MONGODB_URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@ds027491.mlab.com:27491/${process.env.MONGO_DATABASE}`;
+
 // Morgan Middleware
 app.use(morgan('dev'));
 
@@ -26,7 +28,7 @@ app.locals.moment = require('moment');
 
 // Initialize Connect-mongodb-session
 const store = new MongoDBStore({
-    uri: process.env.DB_HOST,
+    uri: MONGODB_URI,
     collection: 'sessions',
 });
 
@@ -156,11 +158,11 @@ mongoose.connection.on('error', (error) => {
     debug(`Database Connected in port ${chalk.red.bold(error)}`);
 });
 const run = async () => {
-    await mongoose.connect(process.env.DB_HOST, {
+    await mongoose.connect(MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
-    await app.listen(process.env.PORT, () => {
+    await app.listen(process.env.PORT || 3000, () => {
         debug(`Server Running in port ${chalk.green.bold('***')} ${chalk.green.bold(process.env.PORT)} ${chalk.green.bold('***')}`);
     });
 };
