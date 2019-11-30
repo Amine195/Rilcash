@@ -2,6 +2,7 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
+const favicon = require('serve-favicon');
 const figlet = require('figlet');
 const chalk = require('chalk');
 const debug = require('debug')('app');
@@ -48,10 +49,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Initialize Public Folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/popper.js/dist/umd')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
+
+// robots.txt Middleware
+app.use('/robots.txt', (req, res, next) => {
+    res.type('text/plain');
+    res.send('User-agent: *\nDisallow: /');
+    next();
+});
 
 // Initialize Express Session
 app.use(session({

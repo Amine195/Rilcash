@@ -47,7 +47,8 @@
         "morgan": "^1.9.1",
         "nodemailer": "^6.3.1",
         "nodemailer-sendgrid-transport": "^0.2.0",
-        "popper.js": "^1.16.0"
+        "popper.js": "^1.16.0",
+        "serve-favicon": "^2.5.0"
     },
     "nodemonConfig": {
         "restartable": "rs",
