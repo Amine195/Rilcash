@@ -147,13 +147,22 @@ figlet('COURTIER-DZ', {
     }
     console.log(err || result);
 });
-mongoose.connect(process.env.DB_HOST, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        debug(`Database Connected in port ${chalk.green.bold('*** 27017 ***')}`);
-        app.listen(process.env.PORT, () => {
-            debug(`Server Running in port ${chalk.green.bold('***')} ${chalk.green.bold(process.env.PORT)} ${chalk.green.bold('***')}`);
-        });
-    })
-    .catch((err) => {
-        debug(`${chalk.red.bold(err)}`);
+
+mongoose.Promise = Promise;
+mongoose.connection.on('connected', () => {
+    debug(`Database Connected in port ${chalk.green.bold('*** 27017 ***')}`);
+});
+mongoose.connection.on('error', (error) => {
+    debug(`Database Connected in port ${chalk.red.bold(error)}`);
+});
+const run = async () => {
+    await mongoose.connect(process.env.DB_HOST, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
     });
+    await app.listen(process.env.PORT, () => {
+        debug(`Server Running in port ${chalk.green.bold('***')} ${chalk.green.bold(process.env.PORT)} ${chalk.green.bold('***')}`);
+    });
+};
+
+run().catch((error) => debug(`Run Erreur: ${chalk.red.bold('***')} ${chalk.red.bold(error)} ${chalk.red.bold('***')}`));
